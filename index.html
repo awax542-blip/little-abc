@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#fff8e9">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Little ABC">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Little ABC - الحروف الممتعة</title>
+<style>
+:root{--ink:#24324a;--muted:#68758a;--pink:#ff7383;--yellow:#ffd166;--blue:#9bd7ff;--green:#a8e6cf;--cream:#fff8e9}
+*{box-sizing:border-box} body{margin:0;background:var(--cream);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;min-height:100dvh}
+button{font:inherit;touch-action:manipulation;cursor:pointer;border:0}
+.app{max-width:620px;margin:auto;padding:calc(14px + env(safe-area-inset-top)) 16px calc(22px + env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}
+.brand h1{font-size:24px;margin:0;direction:ltr;text-align:right;color:#f05a67}.brand p{margin:4px 0 0;color:var(--muted);font-size:14px}
+.stars{background:white;border-radius:18px;padding:10px 13px;font-weight:800;box-shadow:0 3px 0 #f1dfc2;white-space:nowrap}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 16px}
+.tab{border-radius:15px;padding:12px 4px;background:#fff;color:var(--ink);font-weight:750;box-shadow:0 3px 0 #f1dfc2}.tab.active{background:#24324a;color:white;box-shadow:none}
+.panel{background:#fff;border-radius:26px;padding:18px;box-shadow:0 5px 0 #f1dfc2;text-align:center}
+.hint{color:var(--muted);font-size:14px;margin:0 0 12px}
+.flashcard{background:linear-gradient(140deg,#fff 10%,#fff5f5);border:3px solid #ffe2e4;border-radius:22px;padding:10px 12px 18px}
+.letter{font-size:clamp(78px,22vw,124px);line-height:1.05;font-weight:900;direction:ltr;color:var(--pink);text-shadow:3px 4px 0 #ffdce0}
+.picture{font-size:clamp(76px,19vw,104px);line-height:1.15;margin:2px 0 0}
+.word{font-size:27px;font-weight:850;direction:ltr;margin-top:4px}
+.translation{font-size:16px;color:var(--muted);margin-top:4px}
+.actions{display:flex;gap:9px;margin-top:15px}
+.action{flex:1;padding:13px 8px;border-radius:16px;font-weight:800;background:var(--blue);color:#18364b;box-shadow:0 3px 0 #7cb9df}
+.action.sound{background:var(--yellow);box-shadow:0 3px 0 #e5b74e}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:14px}
+.nav button{flex:1;border-radius:15px;padding:13px;background:var(--green);font-weight:850;box-shadow:0 3px 0 #7ec9ab}
+.progress{height:9px;border-radius:99px;background:#f3e9d8;overflow:hidden;margin:16px 0 4px}.progress span{display:block;height:100%;background:#65c8a4;border-radius:99px;width:4%}
+.letter-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:12px}
+.tile{border-radius:15px;background:#f1f8ff;min-height:65px;font-size:25px;font-weight:900;direction:ltr;color:#31445d;box-shadow:0 3px 0 #d9e8f4}
+.tile.done{background:#e2f8ec}.tile.current{outline:3px solid #ffb8c0;background:#fff0f1}
+.quiz-emoji{font-size:74px;margin:10px 0}.quiz-question{font-size:22px;font-weight:850;margin:8px 0 16px}
+.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.choice{background:#e9f5ff;border-radius:17px;padding:16px 8px;font-size:29px;font-weight:900;direction:ltr;box-shadow:0 3px 0 #c9dfef}.choice:active,.tile:active,.action:active,.nav button:active{transform:translateY(2px);box-shadow:none}
+.feedback{min-height:30px;margin-top:13px;font-weight:850;font-size:17px}.small{font-size:12px;color:var(--muted);line-height:1.7;margin:16px 4px 0;text-align:center}
+.hidden{display:none!important}.badge{display:inline-block;background:#fff0bd;border-radius:99px;padding:7px 12px;font-size:13px;font-weight:800;margin-bottom:10px}
+@media(min-width:520px){.letter-grid{grid-template-columns:repeat(6,1fr)}}
+</style>
+</head>
+<body>
+<main class="app">
+<header class="top">
+ <div class="brand"><h1>Little ABC ✨</h1><p>نتعلّم الحروف ونلعب معًا!</p></div>
+ <div class="stars">⭐ <span id="starCount">0</span></div>
+</header>
+<nav class="tabs" aria-label="أقسام التطبيق">
+ <button class="tab active" data-tab="learn">📚 تعلّم</button>
+ <button class="tab" data-tab="letters">🔤 الحروف</button>
+ <button class="tab" data-tab="game">🎮 لعبة</button>
+</nav>
+<section id="learn" class="view">
+ <div class="panel">
+  <p class="hint">اضغط على الحرف، ثم استمع إلى اسمه وكلمته</p>
+  <div class="flashcard">
+   <div class="letter" id="bigLetter">A a</div>
+   <div class="picture" id="picture">🍎</div>
+   <div class="word" id="word">Apple</div>
+   <div class="translation" id="translation">تفاحة</div>
+  </div>
+  <div class="actions">
+   <button class="action sound" id="speakLetter">🔊 اسمع الحرف</button>
+   <button class="action" id="speakWord">🗣️ اسمع الكلمة</button>
+  </div>
+  <div class="nav">
+   <button id="prev">➡️ السابق</button>
+   <button id="next">التالي ⬅️</button>
+  </div>
+  <div class="progress"><span id="progressBar"></span></div>
+  <p class="hint" id="countText">الحرف 1 من 26</p>
+ </div>
+</section>
+<section id="letters" class="view hidden">
+ <div class="panel">
+  <div class="badge">اختر أي حرف لتتعلّمه</div>
+  <div class="letter-grid" id="letterGrid"></div>
+ </div>
+</section>
+<section id="game" class="view hidden">
+ <div class="panel">
+  <div class="badge">🎉 اجمع النجوم مع كل إجابة صحيحة</div>
+  <div class="quiz-question" id="quizQuestion">أين الحرف A؟</div>
+  <div class="quiz-emoji" id="quizEmoji">🍎</div>
+  <div class="choices" id="choices"></div>
+  <div class="feedback" id="feedback" aria-live="polite"></div>
+  <button class="action sound" id="newQuestion" style="width:100%;margin-top:8px">سؤال جديد 🌈</button>
+ </div>
+</section>
+<p class="small">مصمّم لأطفال الروضة • يعمل دون حساب • يحفظ النجوم على هذا الجهاز<br>ملاحظة: قد يعتمد الصوت على أصوات الإنجليزية المثبّتة في جهازك.</p>
+</main>
+<script>
+const letters = [
+["A","Apple","تفاحة","🍎"],["B","Ball","كرة","⚽"],["C","Cat","قطة","🐱"],["D","Dog","كلب","🐶"],
+["E","Elephant","فيل","🐘"],["F","Fish","سمكة","🐟"],["G","Grapes","عنب","🍇"],["H","House","منزل","🏠"],
+["I","Ice cream","آيس كريم","🍦"],["J","Juice","عصير","🧃"],["K","Kite","طائرة ورقية","🪁"],["L","Lion","أسد","🦁"],
+["M","Moon","قمر","🌙"],["N","Nest","عش","🪺"],["O","Orange","برتقالة","🍊"],["P","Penguin","بطريق","🐧"],
+["Q","Queen","ملكة","👑"],["R","Rabbit","أرنب","🐰"],["S","Sun","شمس","☀️"],["T","Turtle","سلحفاة","🐢"],
+["U","Umbrella","مظلة","☂️"],["V","Van","سيارة صغيرة","🚐"],["W","Whale","حوت","🐳"],["X","Xylophone","إكسليفون","🎼"],
+["Y","Yo-yo","يويو","🪀"],["Z","Zebra","حمار وحشي","🦓"]
+];
+let current=0, stars=Number(localStorage.getItem("littleABCStars")||0), quizIndex=0, answered=false;
+const $=id=>document.getElementById(id);
+$("starCount").textContent=stars;
+function showLetter(i){current=(i+26)%26;const a=letters[current];$("bigLetter").textContent=a[0]+" "+a[0].toLowerCase();$("picture").textContent=a[3];$("word").textContent=a[1];$("translation").textContent=a[2];$("countText").textContent=`الحرف ${current+1} من 26`;$("progressBar").style.width=((current+1)/26*100)+"%";document.querySelectorAll(".tile").forEach((b,j)=>{b.classList.toggle("current",j===current);b.classList.toggle("done",j<current)});}
+function speak(text,lang="en-US"){if(!("speechSynthesis" in window)){alert("الصوت غير مدعوم في هذا المتصفح.");return;}window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang=lang;u.rate=.78;u.pitch=1.05;const voices=window.speechSynthesis.getVoices();const v=voices.find(v=>v.lang.toLowerCase().startsWith("en"));if(v)u.voice=v;window.speechSynthesis.speak(u);}
+$("speakLetter").onclick=()=>speak(letters[current][0]);$("speakWord").onclick=()=>speak(letters[current][1]);$("next").onclick=()=>showLetter(current+1);$("prev").onclick=()=>showLetter(current-1);
+function buildGrid(){const g=$("letterGrid");g.innerHTML="";letters.forEach((a,i)=>{const b=document.createElement("button");b.className="tile";b.textContent=a[0];b.onclick=()=>{showLetter(i);setTab("learn")};g.appendChild(b);});}
+function setTab(name){document.querySelectorAll(".view").forEach(v=>v.classList.toggle("hidden",v.id!==name));document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.tab===name));if(name==="game")newQuestion();}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>setTab(b.dataset.tab));
+function newQuestion(){answered=false;$("feedback").textContent="";quizIndex=Math.floor(Math.random()*26);const right=letters[quizIndex];$("quizQuestion").textContent="أين الحرف "+right[0]+"؟";$("quizEmoji").textContent=right[3];let opts=[right[0]];while(opts.length<4){let x=letters[Math.floor(Math.random()*26)][0];if(!opts.includes(x))opts.push(x)}opts.sort(()=>Math.random()-.5);$("choices").innerHTML="";opts.forEach(x=>{const b=document.createElement("button");b.className="choice";b.textContent=x;b.onclick=()=>answer(x,b);$("choices").appendChild(b)});}
+function answer(x,b){if(answered)return;answered=true;if(x===letters[quizIndex][0]){stars++;localStorage.setItem("littleABCStars",stars);$("starCount").textContent=stars;$("feedback").textContent="أحسنت! إجابة صحيحة ⭐";$("feedback").style.color="#16845b";b.style.background="#c9f7dc";}else{$("feedback").textContent="محاولة جميلة! الحرف الصحيح "+letters[quizIndex][0]+" 💛";$("feedback").style.color="#d05b66";b.style.background="#ffe0e3";}}
+$("newQuestion").onclick=newQuestion;
+buildGrid();showLetter(0);
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}
+</script>
+</body></html>
